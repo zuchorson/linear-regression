@@ -3,32 +3,28 @@ document.getElementById("fileInput").addEventListener("change", function () {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = function (e) {
-        const text = e.target.result;
-        processCSV(text);
-    };
+    reader.onload = e => processCSV(e.target.result);
     reader.readAsText(file);
 });
 
 function processCSV(text) {
     const output = document.getElementById("output");
+    const meanOutput = document.getElementById("meanOutput");
+    
     output.textContent = "";
+    meanOutput.textContent = "";
 
     const lines = text.trim().split("\n");
-    lines.shift();
+    const columns = lines.map(line => line.split(";").map(v => parseFloat(v.replace(",", "."))));
 
-    let x = [];
-    let y = [];
+    const headerRemoved = columns.slice(1); // omijamy nagłówek
 
-    for (let line of lines) {
-        let parts = line.split(";");
+    // ==========================
+    // REGRESJA z kolumny 1 i 2
+    // ==========================
 
-        let xi = parseFloat(parts[0].replace(",", "."));
-        let yi = parseFloat(parts[1].replace(",", "."));
-
-        x.push(xi);
-        y.push(yi);
-    }
+    const x = headerRemoved.map(row => row[0]);
+    const y = headerRemoved.map(row => row[1]);
 
     output.textContent += "Wczytane dane (x, y):\n";
     x.forEach((xi, i) => {
@@ -40,7 +36,40 @@ function processCSV(text) {
     output.textContent += "\nWyniki regresji liniowej:\n";
     output.textContent += `Współczynnik kierunkowy: ${result.slope.toFixed(20)} ± ${result.slope_err.toFixed(20)}\n`;
     output.textContent += `Przecięcie z osią y: ${result.intercept.toFixed(20)} ± ${result.intercept_err.toFixed(20)}\n`;
+
+    // ==========================
+    // ŚREDNIE DLA WSZYSTKICH KOLUMN
+    // ==========================
+
+    const colCount = columns[0].length;
+
+    for (let c = 0; c < colCount; c++) {
+        let colValues = headerRemoved
+            .map(row => row[c])
+            .filter(v => !isNaN(v));
+
+        const n = colValues.length;
+        const avg = colValues.reduce((a, b) => a + b, 0) / n;
+
+        const variance =
+            colValues.reduce((s, v) => s + (v - avg) ** 2, 0) / (n - 1);
+
+        const std = Math.sqrt(variance);
+        const std_err = std / Math.sqrt(n);
+
+        meanOutput.textContent +=
+            `Kolumna ${c + 1}:\n` +
+            `Liczba danych: ${n}\n` +
+            `Średnia: ${avg.toFixed(10)}\n` +
+            `Odchylenie standardowe: ${std.toFixed(10)}\n` +
+            `Błąd średniej: ${std_err.toFixed(10)}\n\n`;
+    }
 }
+
+
+// =======================================
+// Funkcja regresji — ta sama co wcześniej
+// =======================================
 
 function linearRegression(x, y) {
     const n = x.length;
