@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Regresja Liniowa</title>
+    <title>Regresja Liniowa + Średnie z CSV</title>
 
     <style>
         body {
@@ -14,7 +14,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
         }
 
         .container {
@@ -23,60 +23,47 @@
             border-radius: 20px;
             backdrop-filter: blur(10px);
             box-shadow: 0 0 25px rgba(0,0,0,0.3);
-            max-width: 600px;
+            max-width: 700px;
+            width: 90%;
             text-align: center;
         }
 
-        h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        p {
-            opacity: 0.9;
-        }
-
         input[type="file"] {
-            margin: 25px 0;
-            padding: 10px;
+            padding: 10px 20px;
             border-radius: 10px;
             background: white;
             color: #333;
+            border: none;
             cursor: pointer;
             font-size: 16px;
         }
 
         pre {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0,0,0,0.5);
             padding: 20px;
             border-radius: 10px;
+            margin-top: 10px;
             text-align: left;
             white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        .footer {
-            margin-top: 15px;
-            opacity: 0.7;
-            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>📈 Regresja Liniowa</h1>
-    <p>Pizgaj mi tu plik CSV, a ja ci to policze bratku!</p>
+    <h1>📈 Regresja Liniowa + Średnie</h1>
 
+    <p>Wgraj plik CSV:</p>
     <input type="file" id="fileInput" accept=".csv">
 
+    <h2>Wyniki regresji</h2>
     <pre id="output">Wyniki pojawią się tutaj...</pre>
 
-    <div class="footer">Made with ❤️ for you'all</div>
+    <h2>Średnie z pliku CSV</h2>
+    <pre id="meanOutput">Średnie pojawią się tutaj...</pre>
 </div>
 
 <script src="script.js"></script>
 
 </body>
 </html>
-
